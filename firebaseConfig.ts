@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
     apiKey: "AIzaSyB-VnAlchs6u_9B32t6kKkmsyC41vVnhIk",
@@ -9,10 +10,12 @@ const firebaseConfig = {
   storageBucket: "hostee2.firebasestorage.app",
   messagingSenderId: "674086125130",
   appId: "1:674086125130:web:6442e363112039bd8b70b3",
-  measurementId: "G-HF5S3MLVV6"
-
+  measurementId: "G-HF5S3MLVV6",
+  databaseURL: "https://hostee2-default-rtdb.firebaseio.com/"
 };
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+export const rtdb = getDatabase(app);

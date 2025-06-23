@@ -8,8 +8,7 @@ import {
   ScrollView,
   StatusBar,
   Alert,
-  KeyboardAvoidingView,
-  Platform
+  Platform,
 } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -56,17 +55,14 @@ export default function RegisterScreen({ navigation }: Props) {
       Alert.alert("Error", "Por favor completa los campos obligatorios");
       return false;
     }
-    
     if (formData.password !== formData.confirmPassword) {
       Alert.alert("Error", "Las contraseñas no coinciden");
       return false;
     }
-
     if (formData.password.length < 6) {
       Alert.alert("Error", "La contraseña debe tener al menos 6 caracteres");
       return false;
     }
-
     return true;
   };
 
@@ -74,12 +70,11 @@ export default function RegisterScreen({ navigation }: Props) {
     if (!validateForm()) return;
 
     setIsLoading(true);
-    
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
       const user = userCredential.user;
-      
-      // Guardar datos adicionales en Firestore
+
       await setDoc(doc(db, "users", user.uid), {
         email: formData.email,
         nombre: formData.nombre,
@@ -97,7 +92,7 @@ export default function RegisterScreen({ navigation }: Props) {
         }
       });
 
-      Alert.alert("¡Éxito!", `Bienvenido, ${formData.nombre}`);
+      Alert.alert("¡Éxito!", `Bienvenido, ${formData.nombre}`, [{ text: "OK" }]);
       navigation.navigate('Login');
     } catch (error: any) {
       Alert.alert("Error", error.message);
@@ -106,11 +101,11 @@ export default function RegisterScreen({ navigation }: Props) {
     }
   };
 
-  const InputField = ({ 
-    icon, 
-    placeholder, 
-    value, 
-    onChangeText, 
+  const InputField = ({
+    icon,
+    placeholder,
+    value,
+    onChangeText,
     secureTextEntry = false,
     keyboardType = "default",
     required = false
@@ -141,24 +136,22 @@ export default function RegisterScreen({ navigation }: Props) {
   );
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container} 
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ flexGrow: 1 }}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
     >
       <StatusBar barStyle="light-content" backgroundColor="#4A90E2" />
-      
-      {/* Header con gradiente */}
-      <LinearGradient
-        colors={['#4A90E2', '#357ABD']}
-        style={styles.header}
-      >
-        <TouchableOpacity 
+
+      <LinearGradient colors={['#4A90E2', '#357ABD']} style={styles.header}>
+        <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.navigate('Login')}
         >
           <Ionicons name="arrow-back" size={24} color="#FFF" />
         </TouchableOpacity>
-        
+
         <View style={styles.headerContent}>
           <View style={styles.logoContainer}>
             <Ionicons name="restaurant" size={40} color="#FFF" />
@@ -168,129 +161,104 @@ export default function RegisterScreen({ navigation }: Props) {
         </View>
       </LinearGradient>
 
-      <ScrollView 
-        style={styles.formContainer}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Información de Cuenta</Text>
+        <InputField
+          icon="mail"
+          placeholder="Correo electrónico"
+          value={formData.email}
+          onChangeText={(text) => updateFormData('email', text)}
+          keyboardType="email-address"
+          required
+        />
+        <InputField
+          icon="lock-closed"
+          placeholder="Contraseña"
+          value={formData.password}
+          onChangeText={(text) => updateFormData('password', text)}
+          secureTextEntry
+          required
+        />
+        <InputField
+          icon="checkmark-circle"
+          placeholder="Confirmar contraseña"
+          value={formData.confirmPassword}
+          onChangeText={(text) => updateFormData('confirmPassword', text)}
+          secureTextEntry
+          required
+        />
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Información Personal</Text>
+        <InputField
+          icon="person"
+          placeholder="Nombre completo"
+          value={formData.nombre}
+          onChangeText={(text) => updateFormData('nombre', text)}
+          required
+        />
+        <InputField
+          icon="call"
+          placeholder="Teléfono"
+          value={formData.telefono}
+          onChangeText={(text) => updateFormData('telefono', text)}
+          keyboardType="phone-pad"
+        />
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Información Laboral</Text>
+        <InputField
+          icon="briefcase"
+          placeholder="Puesto (ej: Mesero, Bartender)"
+          value={formData.puesto}
+          onChangeText={(text) => updateFormData('puesto', text)}
+        />
+        <InputField
+          icon="time"
+          placeholder="Turno (ej: Matutino, Vespertino)"
+          value={formData.turno}
+          onChangeText={(text) => updateFormData('turno', text)}
+        />
+        <InputField
+          icon="trophy"
+          placeholder="Experiencia (ej: 2 años, Nuevo)"
+          value={formData.experiencia}
+          onChangeText={(text) => updateFormData('experiencia', text)}
+        />
+        <InputField
+          icon="storefront"
+          placeholder="Restaurante"
+          value={formData.restaurante}
+          onChangeText={(text) => updateFormData('restaurante', text)}
+        />
+      </View>
+
+      <TouchableOpacity
+        style={[styles.registerButton, isLoading && styles.disabledButton]}
+        onPress={createUser}
+        disabled={isLoading}
       >
-        {/* Información de cuenta */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Información de Cuenta</Text>
-          
-          <InputField
-            icon="mail"
-            placeholder="Correo electrónico"
-            value={formData.email}
-            onChangeText={(text) => updateFormData('email', text)}
-            keyboardType="email-address"
-            required
-          />
-          
-          <InputField
-            icon="lock-closed"
-            placeholder="Contraseña"
-            value={formData.password}
-            onChangeText={(text) => updateFormData('password', text)}
-            secureTextEntry
-            required
-          />
-          
-          <InputField
-            icon="checkmark-circle"
-            placeholder="Confirmar contraseña"
-            value={formData.confirmPassword}
-            onChangeText={(text) => updateFormData('confirmPassword', text)}
-            secureTextEntry
-            required
-          />
-        </View>
+        <LinearGradient colors={['#4A90E2', '#357ABD']} style={styles.gradientButton}>
+          {isLoading ? (
+            <Text style={styles.buttonText}>Creando cuenta...</Text>
+          ) : (
+            <>
+              <Ionicons name="person-add" size={20} color="#FFF" />
+              <Text style={styles.buttonText}>Crear Cuenta</Text>
+            </>
+          )}
+        </LinearGradient>
+      </TouchableOpacity>
 
-        {/* Información personal */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Información Personal</Text>
-          
-          <InputField
-            icon="person"
-            placeholder="Nombre completo"
-            value={formData.nombre}
-            onChangeText={(text) => updateFormData('nombre', text)}
-            required
-          />
-          
-          <InputField
-            icon="call"
-            placeholder="Teléfono"
-            value={formData.telefono}
-            onChangeText={(text) => updateFormData('telefono', text)}
-            keyboardType="phone-pad"
-          />
-        </View>
+      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.loginText}>¿Ya tienes cuenta? </Text>
+        <Text style={styles.loginLink}>Inicia sesión</Text>
+      </TouchableOpacity>
 
-        {/* Información laboral */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Información Laboral</Text>
-          
-          <InputField
-            icon="briefcase"
-            placeholder="Puesto (ej: Mesero, Bartender)"
-            value={formData.puesto}
-            onChangeText={(text) => updateFormData('puesto', text)}
-          />
-          
-          <InputField
-            icon="time"
-            placeholder="Turno (ej: Matutino, Vespertino)"
-            value={formData.turno}
-            onChangeText={(text) => updateFormData('turno', text)}
-          />
-          
-          <InputField
-            icon="trophy"
-            placeholder="Experiencia (ej: 2 años, Nuevo)"
-            value={formData.experiencia}
-            onChangeText={(text) => updateFormData('experiencia', text)}
-          />
-          
-          <InputField
-            icon="storefront"
-            placeholder="Restaurante"
-            value={formData.restaurante}
-            onChangeText={(text) => updateFormData('restaurante', text)}
-          />
-        </View>
-
-        {/* Botones */}
-        <TouchableOpacity 
-          style={[styles.registerButton, isLoading && styles.disabledButton]}
-          onPress={createUser}
-          disabled={isLoading}
-        >
-          <LinearGradient
-            colors={['#4A90E2', '#357ABD']}
-            style={styles.gradientButton}
-          >
-            {isLoading ? (
-              <Text style={styles.buttonText}>Creando cuenta...</Text>
-            ) : (
-              <>
-                <Ionicons name="person-add" size={20} color="#FFF" />
-                <Text style={styles.buttonText}>Crear Cuenta</Text>
-              </>
-            )}
-          </LinearGradient>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={styles.loginButton}
-          onPress={() => navigation.navigate('Login')}
-        >
-          <Text style={styles.loginText}>¿Ya tienes cuenta? </Text>
-          <Text style={styles.loginLink}>Inicia sesión</Text>
-        </TouchableOpacity>
-
-        <View style={styles.bottomSpace} />
-      </ScrollView>
-    </KeyboardAvoidingView>
+      <View style={styles.bottomSpace} />
+    </ScrollView>
   );
 }
 

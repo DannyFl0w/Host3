@@ -19,6 +19,7 @@ type RootStackParamList = {
   Login: undefined;
   Menu: undefined;
   Profile: undefined;
+  Mesas: undefined;
 };
 
 type MenuScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Menu'>;
@@ -150,7 +151,7 @@ export default function MenuScreen({ navigation }: Props) {
           icon="restaurant"
           title="Mesas"
           subtitle="Gestionar mesas y pedidos"
-          onPress={() => Alert.alert("Próximamente", "Función de mesas en desarrollo")}
+          onPress={() => navigation.navigate('Mesas')}
           colors={['#4A90E2', '#357ABD']}
         />
         
