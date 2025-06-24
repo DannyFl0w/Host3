@@ -39,7 +39,7 @@ export default function ProfileScreen({ navigation }: Props) {
     experiencia: "Cargando...",
     restaurante: "Cargando...",
     telefono: "Cargando...",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+    avatar: "https://images.pexels.com/photos/2664417/pexels-photo-2664417.jpeg",
     stats: {
       satisfaccion: 0,
       ordenes: 0,
@@ -86,7 +86,7 @@ export default function ProfileScreen({ navigation }: Props) {
           experiencia: "Nuevo",
           restaurante: "Hostee Restaurant",
           telefono: "+52 614 123 4567",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+          avatar: "https://images.pexels.com/photos/2664417/pexels-photo-2664417.jpeg",
           stats: {
             satisfaccion: 95,
             ordenes: 0,

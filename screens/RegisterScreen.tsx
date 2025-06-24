@@ -83,7 +83,7 @@ export default function RegisterScreen({ navigation }: Props) {
         turno: formData.turno || "Matutino",
         experiencia: formData.experiencia || "Nuevo",
         restaurante: formData.restaurante || "Hostee Restaurant",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+        avatar: "https://images.pexels.com/photos/2664417/pexels-photo-2664417.jpeg",
         createdAt: new Date().toISOString(),
         stats: {
           satisfaccion: 95,
